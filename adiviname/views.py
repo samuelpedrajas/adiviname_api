@@ -31,8 +31,8 @@ class expression_list(ListAPIView):
        return expressions
 
     # Get all expressions
-    def get(self, request):
-        expressions = self.get_queryset()
+    def get(self, request, pk):
+        expressions = self.get_queryset(pk=pk)
         paginate_queryset = self.paginate_queryset(expressions)
         serializer = self.serializer_class(paginate_queryset, many=True)
         return self.get_paginated_response(serializer.data)
