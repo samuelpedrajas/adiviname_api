@@ -1,17 +1,32 @@
 from django.db import models
 
+from .middleware import local
+
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None and hasattr(local, 'user'):
+            self.creator = local.user
+        return super(BaseModel, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+
  # Create Game Model
-class Game(models.Model):
+class Game(BaseModel):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True) # When it was create
-    updated_at = models.DateTimeField(auto_now=True) # When i was update
-    creator = models.ForeignKey('auth.User', related_name='game', on_delete=models.CASCADE)
+
+    def __unicode__(self):
+        return self.title
 
 
-class Expression(models.Model):
+class Expression(BaseModel):
     text = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True) # When it was create
-    updated_at = models.DateTimeField(auto_now=True) # When i was update
-    creator = models.ForeignKey('auth.User', related_name='expression', on_delete=models.CASCADE)
     game = models.ForeignKey(Game, related_name='expression', on_delete=models.CASCADE)
+    def __unicode__(self):
+        return self.text + "(%s)" % str(self.game)
