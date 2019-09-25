@@ -14,6 +14,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['-id']
 
 
  # Create Game Model
@@ -27,6 +28,7 @@ class Game(BaseModel):
 
 class Expression(BaseModel):
     text = models.CharField(max_length=100)
-    game = models.ForeignKey(Game, related_name='expression', on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, related_name='expressions', on_delete=models.CASCADE)
+
     def __unicode__(self):
         return self.text + "(%s)" % str(self.game)

@@ -5,10 +5,15 @@ from django.contrib.auth.models import User
 
 class GameSerializer(serializers.ModelSerializer):  # create class to serializer model
     creator = serializers.ReadOnlyField(source='creator.username')
+    expressions = serializers.SlugRelatedField(
+		many=True,
+		read_only=True,
+		slug_field='text'
+	)
 
     class Meta:
         model = Game
-        fields = ('id', 'title', 'description', 'creator')
+        fields = ('id', 'title', 'description', 'creator', 'expressions')
 
 
 class ExpressionSerializer(serializers.ModelSerializer):  # create class to serializer model
