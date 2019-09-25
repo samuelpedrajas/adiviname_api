@@ -8,7 +8,7 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 
     class Meta:
         model = Game
-        fields = ('pk', 'title', 'description', 'creator')
+        fields = ('id', 'title', 'description', 'creator')
 
 
 class ExpressionSerializer(serializers.ModelSerializer):  # create class to serializer model

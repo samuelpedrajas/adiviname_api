@@ -26,13 +26,13 @@ class expression_list(ListAPIView):
     # permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
     
-    def get_queryset(self):
-       expressions = Expression.objects.get()
+    def get_queryset(self, pk):
+       expressions = Expression.objects.filter(game__id=pk)
        return expressions
 
     # Get all expressions
     def get(self, request, pk):
-        expressions = self.get_queryset(pk=pk)
+        expressions = self.get_queryset(pk)
         paginate_queryset = self.paginate_queryset(expressions)
         serializer = self.serializer_class(paginate_queryset, many=True)
         return self.get_paginated_response(serializer.data)
