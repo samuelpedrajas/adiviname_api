@@ -14,6 +14,6 @@ urlpatterns = [
     url(r'^rest-auth/registration/', RegisterView.as_view()),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^admin/', admin.site.urls),
-    re_path(r'^static/(?P<path>.*)$', serve,
+    url(r'^static/(?P<path>.*)$', serve,
             {'document_root': settings.STATIC_ROOT}),
 ]
