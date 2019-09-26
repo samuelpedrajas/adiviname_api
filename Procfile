@@ -1,1 +1,1 @@
-web: gunicorn adiviname:app --log-file=-
+web: gunicorn adiviname:adiviname --log-file=-
