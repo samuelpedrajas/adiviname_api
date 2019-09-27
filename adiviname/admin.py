@@ -1,11 +1,20 @@
 from django.contrib import admin
 
-from .models import Game, Expression
+from .models import Expression, Game, GameType
 
 class ExpressionInline(admin.StackedInline):
     model = Expression
     extra = 30
     exclude = ["created_at", "updated_at", "creator"]
+
+
+class GameTypeAdmin(admin.ModelAdmin):
+	fields = ["name", "text"]
+	list_display = ["name", "text"]
+
+
+class GameTypeInline(admin.TabularInline):
+    model = GameType
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -22,4 +31,5 @@ class ExpressionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Game, GameAdmin)
+admin.site.register(GameType, GameTypeAdmin)
 admin.site.register(Expression, ExpressionAdmin)

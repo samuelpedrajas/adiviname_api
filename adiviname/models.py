@@ -2,6 +2,15 @@ from django.db import models
 
 from .middleware import local
 
+
+class GameType(models.Model):
+    name = models.CharField(max_length=30, primary_key=True)
+    text = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.text
+
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,6 +33,11 @@ class Game(BaseModel):
 
     def __unicode__(self):
         return self.title
+
+
+class GameClick(models.Model):
+    game_id = models.OneToOneField(Game, related_name="click", primary_key=True, on_delete=models.CASCADE)
+    num_clicks = models.IntegerField()
 
 
 class Expression(BaseModel):
