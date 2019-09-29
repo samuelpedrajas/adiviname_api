@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Expression, Game, GameType
+from .models import Expression, Game, GameClick, GameType
 
 class ExpressionInline(admin.StackedInline):
     model = Expression
@@ -13,15 +13,20 @@ class GameTypeAdmin(admin.ModelAdmin):
 	list_display = ["name", "text"]
 
 
-class GameTypeInline(admin.TabularInline):
-    model = GameType
+class GameClickAdmin(admin.ModelAdmin):
+	fields = ["game_id", "num_clicks", "updated_at"]
+	list_display = ["game_id", "num_clicks", "updated_at"]
+
+
+class GameClickInline(admin.TabularInline):
+    model = GameClick
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ['title', 'description', "created_at", "updated_at", "creator"]
-    list_display = ('title', 'description', "created_at", "updated_at", "creator",)
-    readonly_fields = ["created_at", "updated_at", "creator"]
-    inlines = [ExpressionInline]
+    fields = ["id", 'title', 'description', "game_type", "created_at", "updated_at", "creator"]
+    list_display = ("id", 'title', 'description', "created_at", "updated_at", "creator",)
+    readonly_fields = ["id", "created_at", "updated_at", "creator"]
+    inlines = [GameClickInline, ExpressionInline]
 
 
 class ExpressionAdmin(admin.ModelAdmin):
@@ -31,5 +36,6 @@ class ExpressionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Game, GameAdmin)
+admin.site.register(GameClick, GameClickAdmin)
 admin.site.register(GameType, GameTypeAdmin)
 admin.site.register(Expression, ExpressionAdmin)

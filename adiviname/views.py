@@ -1,6 +1,10 @@
+from rest_framework import status
 from rest_framework.generics import ListAPIView
-from .models import Game, Expression
-from .serializers import ExpressionSerializer, GameSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Game, GameClick
+from .serializers import GameSerializer
 from .pagination import CustomPagination
 
 
@@ -21,18 +25,16 @@ class game_list(ListAPIView):
         return self.get_paginated_response(serializer.data)
 
 
-class expression_list(ListAPIView):
-    serializer_class = ExpressionSerializer
-    # permission_classes = (IsAuthenticated,)
-    pagination_class = CustomPagination
-    
-    def get_queryset(self, pk):
-       expressions = Expression.objects.filter(game__id=pk)
-       return expressions
+class game_click(APIView):
 
-    # Get all expressions
-    def get(self, request, pk):
-        expressions = self.get_queryset(pk)
-        paginate_queryset = self.paginate_queryset(expressions)
-        serializer = self.serializer_class(paginate_queryset, many=True)
-        return self.get_paginated_response(serializer.data)
+    throttle_scope = 'anonymous'
+
+    def post(self, request, pk):
+        try:
+            game = Game.objects.get(id=pk)
+            game_click, created = GameClick.objects.get_or_create(game_id=game)
+            game_click.num_clicks += 1
+            game_click.save()
+            return Response(status=status.HTTP_200_OK)
+        except Game.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 from .middleware import local
@@ -8,6 +10,9 @@ class GameType(models.Model):
     text = models.CharField(max_length=100)
 
     def __unicode__(self):
+        return self.text
+
+    def __str__(self):
         return self.text
 
 
@@ -28,21 +33,36 @@ class BaseModel(models.Model):
 
  # Create Game Model
 class Game(BaseModel):
-    title = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=False)
+    description = models.CharField(max_length=100, null=False)
+    game_type = models.ForeignKey(GameType, related_name='games', on_delete=models.CASCADE)
 
     def __unicode__(self):
+        return self.title
+
+    def __str__(self):
         return self.title
 
 
 class GameClick(models.Model):
     game_id = models.OneToOneField(Game, related_name="click", primary_key=True, on_delete=models.CASCADE)
-    num_clicks = models.IntegerField()
+    num_clicks = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Expression(BaseModel):
-    text = models.CharField(max_length=100)
+    text = models.CharField(max_length=100, null=False)
     game = models.ForeignKey(Game, related_name='expressions', on_delete=models.CASCADE)
 
+
+    def save(self, *args, **kwargs):
+        if self.game is not None:
+            self.game.updated_at = datetime.now()
+            self.game.save()
+        return super(Expression, self).save(*args, **kwargs)
+
     def __unicode__(self):
+        return self.text + "(%s)" % str(self.game)
+
+    def __str__(self):
         return self.text + "(%s)" % str(self.game)

@@ -4,9 +4,9 @@ from . import views
 
 urlpatterns = [
     re_path(
-    	r'^api/v1/game/(?P<pk>[0-9]+)$',
-        views.expression_list.as_view(),
-        name='expression_list'
+    	r'^api/v1/game_click/(?P<pk>[0-9]+)$',
+        views.game_click.as_view(),
+        name='game_click'
     ),
     path(
     	'api/v1/game/',
