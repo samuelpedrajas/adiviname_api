@@ -16,6 +16,9 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 		since_datetime = self.context.get("since_datetime", False)
 		if instance.updated_at < since_datetime:
 			data.pop('expressions')
+			data["updated"] = False
+		else:
+			data["updated"] = True
 
 		return data
 
