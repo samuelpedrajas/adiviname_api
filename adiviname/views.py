@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -8,24 +10,41 @@ from .serializers import GameSerializer
 from .pagination import CustomPagination
 
 
-class game_list(ListAPIView):
+class GameListView(ListAPIView):
     serializer_class = GameSerializer
     # permission_classes = (IsAuthenticated,)
     pagination_class = CustomPagination
+
+    def get_serializer_context(self):
+        context = super(GameListView, self).get_serializer_context()
+
+        context.update({
+            "since_datetime": self.since_datetime
+        })
+        return context
     
     def get_queryset(self):
-       games = Game.objects.all()
-       return games
+        games = Game.objects.all().order_by('clicks__num_clicks', '-updated_at', '-created_at')
+        return games
+
+    def parse_querystrings(self, request):
+        self.since_datetime = request.GET.get("since_datetime", "")
+        try:
+            self.since_datetime = datetime.fromtimestamp(int(self.since_datetime))
+        except:
+            self.since_datetime = datetime.fromtimestamp(0)
 
     # Get all games
     def get(self, request):
+        self.parse_querystrings(request)
         games = self.get_queryset()
         paginate_queryset = self.paginate_queryset(games)
-        serializer = self.serializer_class(paginate_queryset, many=True)
+        serializer = self.serializer_class(paginate_queryset, many=True, context={'since_datetime': self.since_datetime})
+
         return self.get_paginated_response(serializer.data)
 
 
-class game_click(APIView):
+class GameClickView(APIView):
 
     throttle_scope = 'anonymous'
 

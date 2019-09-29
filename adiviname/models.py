@@ -45,7 +45,7 @@ class Game(BaseModel):
 
 
 class GameClick(models.Model):
-    game_id = models.OneToOneField(Game, related_name="click", primary_key=True, on_delete=models.CASCADE)
+    game_id = models.OneToOneField(Game, related_name="clicks", primary_key=True, on_delete=models.CASCADE)
     num_clicks = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
