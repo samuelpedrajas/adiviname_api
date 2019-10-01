@@ -14,7 +14,7 @@ class GameTypeAdmin(admin.ModelAdmin):
 
 
 class GameClickAdmin(admin.ModelAdmin):
-	fields = ["game_id", "num_clicks", "updated_at"]
+	fields = ["game_id", "num_clicks"]
 	list_display = ["game_id", "num_clicks", "updated_at"]
 
 

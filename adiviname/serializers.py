@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import Game, Expression
+from .models import Game, GameClick, Expression
 from django.contrib.auth.models import User
 
+
+class GameClickSerializer(serializers.ModelSerializer):  # create class to serializer model
+
+    class Meta:
+        model = GameClick
+        fields = ('num_clicks',)
 
 class GameSerializer(serializers.ModelSerializer):  # create class to serializer model
 	creator = serializers.ReadOnlyField(source='creator.username')
@@ -10,7 +16,11 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 		read_only=True,
 		slug_field='text'
 	)
-
+	clicks = serializers.SlugRelatedField(
+		many=False,
+		read_only=True,
+		slug_field='num_clicks'
+	)
 	def to_representation(self, instance):
 		data = super(GameSerializer, self).to_representation(instance)
 		since_datetime = self.context.get("since_datetime", False)

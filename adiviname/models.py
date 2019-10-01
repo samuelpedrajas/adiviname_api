@@ -50,10 +50,10 @@ class GameClick(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return self.num_clicks
+        return str(self.num_clicks)
 
     def __str__(self):
-        return self.num_clicks
+        return str(self.num_clicks)
 
 
 class Expression(BaseModel):

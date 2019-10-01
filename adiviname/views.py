@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.db.models import F
+
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -24,7 +26,7 @@ class GameListView(ListAPIView):
         return context
     
     def get_queryset(self):
-        games = Game.objects.all().order_by('clicks__num_clicks', '-updated_at', '-created_at')
+        games = Game.objects.all().order_by(F('clicks__num_clicks').desc(nulls_last=True), '-updated_at', '-created_at')
         return games
 
     def parse_querystrings(self, request):
