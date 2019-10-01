@@ -24,7 +24,7 @@ class GameListView(ListAPIView):
         return context
     
     def get_queryset(self):
-        games = Game.objects.all().order_by('clicks__num_clicks', '-updated_at', '-created_at')
+        games = Game.objects.all().order_by('-created_at', '-updated_at', 'clicks__num_clicks')
         return games
 
     def parse_querystrings(self, request):
