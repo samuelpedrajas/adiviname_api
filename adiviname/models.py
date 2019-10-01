@@ -49,6 +49,12 @@ class GameClick(models.Model):
     num_clicks = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __unicode__(self):
+        return self.num_clicks
+
+    def __str__(self):
+        return self.num_clicks
+
 
 class Expression(BaseModel):
     text = models.CharField(max_length=100, null=False)
