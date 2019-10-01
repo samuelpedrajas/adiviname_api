@@ -32,6 +32,9 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 			data.pop('creator')
 			data.pop('expressions')
 
+		if data["clicks"] is None:
+			data["clicks"] = 0
+
 		return data
 
 	class Meta:
