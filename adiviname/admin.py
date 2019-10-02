@@ -23,7 +23,7 @@ class GameClickInline(admin.TabularInline):
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["id", 'title', 'description', "game_type", "created_at", "updated_at", "creator"]
+    fields = ["id", 'title', 'description', "featured", "game_type", "created_at", "updated_at", "creator"]
     list_display = ("id", 'title', 'description', "created_at", "updated_at", "creator",)
     readonly_fields = ["id", "created_at", "updated_at", "creator"]
     inlines = [GameClickInline, ExpressionInline]
