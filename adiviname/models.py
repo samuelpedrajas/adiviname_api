@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.db import models
-
 from .middleware import local
 
 
@@ -34,8 +33,9 @@ class BaseModel(models.Model):
  # Create Game Model
 class Game(BaseModel):
     title = models.CharField(max_length=100, null=False)
-    description = models.CharField(max_length=100, null=False)
     game_type = models.ForeignKey(GameType, related_name='games', on_delete=models.CASCADE)
+    image_updated_at = models.DateTimeField(auto_now_add=True)
+    expressions_updated_at = models.DateTimeField(auto_now_add=True)
     featured = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -43,6 +43,27 @@ class Game(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+def iconName(self, filename):
+    return 'icons/' + filename
+
+
+class GameIcon(BaseModel):
+    game = models.OneToOneField(Game, related_name="icon", on_delete=models.CASCADE)
+    file = models.ImageField(
+        upload_to=iconName,
+        max_length=254, blank=True, null=True
+    )
+
+    def save(self, *args, **kwargs):
+        if self.game is not None:
+            self.game.image_updated_at = datetime.now()
+            self.game.save()
+        return super(GameIcon, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.file.name
 
 
 class GameClick(models.Model):
@@ -64,7 +85,7 @@ class Expression(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.game is not None:
-            self.game.updated_at = datetime.now()
+            self.game.expressions_updated_at = datetime.now()
             self.game.save()
         return super(Expression, self).save(*args, **kwargs)
 

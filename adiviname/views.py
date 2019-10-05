@@ -30,16 +30,19 @@ class GameListView(ListAPIView):
     def parse_querystrings(self, request):
         self.since_datetime = request.GET.get("since_datetime", "")
         try:
-            self.since_datetime = datetime.fromtimestamp(int(self.since_datetime))
+            self.since_datetime = datetime.utcfromtimestamp(int(self.since_datetime))
         except:
-            self.since_datetime = datetime.fromtimestamp(0)
+            self.since_datetime = datetime.utcfromtimestamp(0)
 
     # Get all games
     def get(self, request):
         self.parse_querystrings(request)
         games = self.get_queryset()
         paginate_queryset = self.paginate_queryset(games)
-        serializer = self.serializer_class(paginate_queryset, many=True, context={'since_datetime': self.since_datetime})
+        serializer = self.serializer_class(paginate_queryset, many=True, context={
+            'since_datetime': self.since_datetime,
+            'request':request
+        })
 
         return self.get_paginated_response(serializer.data)
 

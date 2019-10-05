@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Game, GameClick, Expression
+from .models import Game, GameClick, GameIcon, Expression
 from django.contrib.auth.models import User
 
 
@@ -8,6 +8,21 @@ class GameClickSerializer(serializers.ModelSerializer):  # create class to seria
     class Meta:
         model = GameClick
         fields = ('num_clicks',)
+
+
+class GameIconSerializer(serializers.ModelSerializer):  # create class to serializer model
+	url = serializers.SerializerMethodField()
+
+
+	class Meta:
+		model = GameIcon
+		fields = ('url',)
+
+	def get_url(self, game_icon):
+		request = self.context.get('request')
+		url = game_icon.file.url
+		return request.build_absolute_uri(url)
+
 
 class GameSerializer(serializers.ModelSerializer):  # create class to serializer model
 	creator = serializers.ReadOnlyField(source='creator.username')
@@ -21,18 +36,24 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 		read_only=True,
 		slug_field='num_clicks'
 	)
+	icon = GameIconSerializer()
+
 	def to_representation(self, instance):
 		data = super(GameSerializer, self).to_representation(instance)
 		since_datetime = self.context.get("since_datetime", False)
 		if instance.updated_at < since_datetime:
 			data.pop('title')
-			data.pop('description')
-			data.pop('game_type	')
+			data.pop('game_type')
 			data.pop('updated_at')
 			data.pop('created_at')
 			data.pop('creator')
-			data.pop('expressions')
 			data.pop('featured')
+
+		if instance.expressions_updated_at < since_datetime:
+			data.pop('expressions')
+
+		if instance.image_updated_at < since_datetime:
+			data.pop('icon')
 
 		if data["clicks"] is None:
 			data["clicks"] = 0
@@ -41,7 +62,7 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 
 	class Meta:
 		model = Game
-		fields = ('id', 'title', 'description', 'featured', 'game_type', 'updated_at', 'created_at', 'creator', 'expressions', 'clicks')
+		fields = ('id', 'title', 'icon', 'featured', 'game_type', 'updated_at', 'created_at', 'creator', 'expressions', 'clicks')
 
 
 class ExpressionSerializer(serializers.ModelSerializer):  # create class to serializer model
