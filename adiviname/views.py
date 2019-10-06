@@ -1,3 +1,5 @@
+import pytz
+
 from datetime import datetime
 
 from rest_framework import status
@@ -30,9 +32,9 @@ class GameListView(ListAPIView):
     def parse_querystrings(self, request):
         self.since_datetime = request.GET.get("since_datetime", "")
         try:
-            self.since_datetime = datetime.utcfromtimestamp(int(self.since_datetime))
+            self.since_datetime = pytz.utc.localize(datetime.utcfromtimestamp(int(self.since_datetime)))
         except:
-            self.since_datetime = datetime.utcfromtimestamp(0)
+            self.since_datetime = pytz.utc.localize(datetime.utcfromtimestamp(0))
 
     # Get all games
     def get(self, request):

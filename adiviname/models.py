@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 from django.db import models
 from .middleware import local
@@ -58,7 +58,7 @@ class GameIcon(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.game is not None:
-            self.game.image_updated_at = datetime.now()
+            self.game.image_updated_at = timezone.now()
             self.game.save()
         return super(GameIcon, self).save(*args, **kwargs)
 
@@ -85,7 +85,8 @@ class Expression(BaseModel):
 
     def save(self, *args, **kwargs):
         if self.game is not None:
-            self.game.expressions_updated_at = datetime.now()
+            self.game.updated_at = timezone.now()
+            self.game.expressions_updated_at = timezone.now()
             self.game.save()
         return super(Expression, self).save(*args, **kwargs)
 
