@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.db import models
 from .middleware import local
 
+from api_crud.storage_backends import PublicMediaStorage
+
 
 class GameType(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
@@ -52,6 +54,7 @@ def iconName(self, filename):
 class GameIcon(BaseModel):
     game = models.OneToOneField(Game, related_name="icon", on_delete=models.CASCADE)
     file = models.ImageField(
+        storage=PublicMediaStorage(),
         upload_to=iconName,
         max_length=254, blank=True, null=True
     )
