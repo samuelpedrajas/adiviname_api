@@ -34,6 +34,7 @@ class BaseModel(models.Model):
 class Game(BaseModel):
     title = models.CharField(max_length=100, null=False)
     game_type = models.ForeignKey(GameType, related_name='games', on_delete=models.CASCADE)
+    description = models.CharField(max_length=100, null=False)
     image_updated_at = models.DateTimeField(auto_now_add=True)
     expressions_updated_at = models.DateTimeField(auto_now_add=True)
     featured = models.BooleanField(default=False)
