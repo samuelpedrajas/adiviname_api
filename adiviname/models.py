@@ -80,10 +80,11 @@ class GameIconBase(BaseModel):
     )
 
     def save(self, *args, **kwargs):
+        ret = super(GameIconBase, self).save(*args, **kwargs)
         for game in Game.objects.filter(icon_base__file=self.file):
             game.image_base_updated_at = timezone.now()
             game.save()
-        return super(GameIconBase, self).save(*args, **kwargs)
+        return ret
 
     def __str__(self):
         return self.file.name
