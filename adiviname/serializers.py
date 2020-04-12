@@ -26,16 +26,21 @@ class GameIconSerializer(serializers.ModelSerializer):  # create class to serial
 
 class GameIconBaseSerializer(serializers.ModelSerializer):  # create class to serializer model
 	url = serializers.SerializerMethodField()
-
+	name = serializers.SerializerMethodField()
 
 	class Meta:
 		model = GameIconBase
-		fields = ('url',)
+		fields = ('url', 'name',)
 
 	def get_url(self, game_icon_base):
 		request = self.context.get('request')
 		url = game_icon_base.file.url
 		return request.build_absolute_uri(url)
+
+	def get_name(self, game_icon_base):
+		url = game_icon_base.file.url
+		name = url[url.rfind("/") + 1:].split(".")[0]
+		return name
 
 
 class GameSerializer(serializers.ModelSerializer):  # create class to serializer model
