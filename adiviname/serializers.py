@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Game, GameClick, GameIcon, Expression
+from .models import Game, GameClick, GameIcon, GameIconBase, Expression
 from django.contrib.auth.models import User
 
 
@@ -24,6 +24,20 @@ class GameIconSerializer(serializers.ModelSerializer):  # create class to serial
 		return request.build_absolute_uri(url)
 
 
+class GameIconBaseSerializer(serializers.ModelSerializer):  # create class to serializer model
+	url = serializers.SerializerMethodField()
+
+
+	class Meta:
+		model = GameIconBase
+		fields = ('url',)
+
+	def get_url(self, game_icon_base):
+		request = self.context.get('request')
+		url = game_icon_base.file.url
+		return request.build_absolute_uri(url)
+
+
 class GameSerializer(serializers.ModelSerializer):  # create class to serializer model
 	creator = serializers.ReadOnlyField(source='creator.username')
 	expressions = serializers.SlugRelatedField(
@@ -37,6 +51,7 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 		slug_field='num_clicks'
 	)
 	icon = GameIconSerializer()
+	icon_base = GameIconBaseSerializer()
 
 	def to_representation(self, instance):
 		data = super(GameSerializer, self).to_representation(instance)
