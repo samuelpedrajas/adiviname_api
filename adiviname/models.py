@@ -1,5 +1,7 @@
 from django.utils import timezone
 
+from django_cleanup import cleanup
+
 from django.db import models
 from .middleware import local
 
@@ -72,6 +74,7 @@ def iconBaseName(self, filename):
     return 'icon_bases/' + filename
 
 
+@cleanup.ignore
 class GameIconBase(BaseModel):
     game = models.OneToOneField(Game, related_name="icon_base", on_delete=models.CASCADE)
     file = models.ImageField(
