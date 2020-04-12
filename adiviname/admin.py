@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 
-from .models import Expression, Game, GameClick, GameIcon, GameType
+from .models import Expression, Game, GameClick, GameIcon, GameIconBase, GameType
 
 class ExpressionInline(admin.StackedInline):
     model = Expression
@@ -37,8 +37,22 @@ class GameIconInline(admin.TabularInline):
         )
 
 
+class GameIconBaseInline(admin.TabularInline):
+    model = GameIconBase
+    fields = ["icon_base_preview", "file", "updated_at"]
+    readonly_fields = ('icon_base_preview', 'updated_at',)
+
+    def icon_base_preview(self, obj):
+        return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
+                url = obj.file.url,
+                width = obj.file.width,
+                height = obj.file.height,
+            )
+        )
+
+
 class GameAdmin(admin.ModelAdmin):
-    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "expressions_updated_at", "creator"]
+    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "expressions_updated_at", "creator", "icon_base"]
     list_display = ("id", 'title', "featured", "game_type", "created_at", "updated_at", "creator",)
     readonly_fields = ["id", "created_at", "updated_at", "image_updated_at", "expressions_updated_at", "creator"]
     inlines = [GameIconInline, GameClickInline, ExpressionInline]
