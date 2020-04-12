@@ -52,9 +52,9 @@ class GameIconBaseInline(admin.TabularInline):
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "expressions_updated_at", "creator", "icon_base"]
+    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator", GameIconBaseInline]
     list_display = ("id", 'title', "featured", "game_type", "created_at", "updated_at", "creator",)
-    readonly_fields = ["id", "created_at", "updated_at", "image_updated_at", "expressions_updated_at", "creator"]
+    readonly_fields = ["id", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator"]
     inlines = [GameIconInline, GameClickInline, ExpressionInline]
 
 

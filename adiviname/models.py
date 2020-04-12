@@ -60,7 +60,7 @@ class Game(BaseModel):
     image_base_updated_at = models.DateTimeField(auto_now_add=True)
     expressions_updated_at = models.DateTimeField(auto_now_add=True)
     featured = models.BooleanField(default=False)
-    icon_base = models.ForeignKey(GameIconBase, null=True, related_name="game", on_delete=models.CASCADE)
+    icon_base = models.ForeignKey(GameIconBase, null=True, related_name="games", on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.title
