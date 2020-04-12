@@ -37,25 +37,25 @@ class GameIconInline(admin.TabularInline):
         )
 
 
-class GameIconBaseInline(admin.TabularInline):
-    model = GameIconBase
-    fields = ["icon_base_preview", "file", "updated_at"]
-    readonly_fields = ('icon_base_preview', 'updated_at',)
+class GameAdmin(admin.ModelAdmin):
+    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator", "game_icon"]
+    list_display = ("id", 'title', "featured", "game_type", "created_at", "updated_at", "creator",)
+    readonly_fields = ["id", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator"]
+    inlines = [GameIconInline, GameClickInline, ExpressionInline]
 
-    def icon_base_preview(self, obj):
+
+class GameIconBaseAdmin(admin.ModelAdmin):
+    model = GameIconBase
+    fields = ["icon_preview", "file", "updated_at"]
+    readonly_fields = ('icon_preview', 'updated_at',)
+
+    def icon_preview(self, obj):
         return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
                 url = obj.file.url,
                 width = obj.file.width,
                 height = obj.file.height,
             )
         )
-
-
-class GameAdmin(admin.ModelAdmin):
-    fields = ["id", 'title', "featured", "game_type", "description", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator", GameIconBaseInline]
-    list_display = ("id", 'title', "featured", "game_type", "created_at", "updated_at", "creator",)
-    readonly_fields = ["id", "created_at", "updated_at", "image_updated_at", "image_base_updated_at", "expressions_updated_at", "creator"]
-    inlines = [GameIconInline, GameClickInline, ExpressionInline]
 
 
 class ExpressionAdmin(admin.ModelAdmin):
@@ -65,6 +65,7 @@ class ExpressionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Game, GameAdmin)
+admin.site.register(GameIconBase, GameIconBaseAdmin)
 admin.site.register(GameClick, GameClickAdmin)
 admin.site.register(GameType, GameTypeAdmin)
 admin.site.register(Expression, ExpressionAdmin)
