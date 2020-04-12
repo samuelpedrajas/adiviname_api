@@ -69,6 +69,7 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 			data.pop('creator')
 			data.pop('featured')
 			data.pop('description')
+			data.pop('examples')
 
 		if instance.expressions_updated_at < since_datetime:
 			data.pop('expressions')
@@ -86,7 +87,7 @@ class GameSerializer(serializers.ModelSerializer):  # create class to serializer
 
 	class Meta:
 		model = Game
-		fields = ('id', 'title', 'icon', 'icon_base', 'featured', 'game_type', 'description', 'updated_at', 'created_at', 'creator', 'expressions', 'clicks')
+		fields = ('id', 'title', 'icon', 'icon_base', 'featured', 'game_type', 'description', 'examples', 'updated_at', 'created_at', 'creator', 'expressions', 'clicks')
 
 
 class ExpressionSerializer(serializers.ModelSerializer):  # create class to serializer model
