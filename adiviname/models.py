@@ -30,27 +30,6 @@ class BaseModel(models.Model):
         ordering = ['-id']
 
 
-
-def iconBaseName(self, filename):
-    return 'icon_bases/' + filename
-
-
-class GameIconBase(BaseModel):
-    file = models.ImageField(
-        upload_to=iconBaseName,
-        max_length=254, blank=True, null=True
-    )
-
-    def save(self, *args, **kwargs):
-        if self.game is not None:
-            self.game.image_base_updated_at = timezone.now()
-            self.game.save()
-        return super(GameIconBase, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.file.name
-
-
  # Create Game Model
 class Game(BaseModel):
     title = models.CharField(max_length=100, null=False)
@@ -60,7 +39,6 @@ class Game(BaseModel):
     image_base_updated_at = models.DateTimeField(auto_now_add=True)
     expressions_updated_at = models.DateTimeField(auto_now_add=True)
     featured = models.BooleanField(default=False)
-    icon_base = models.ForeignKey(GameIconBase, null=True, related_name="games", on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.title
@@ -85,6 +63,27 @@ class GameIcon(BaseModel):
             self.game.image_updated_at = timezone.now()
             self.game.save()
         return super(GameIcon, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.file.name
+
+
+def iconBaseName(self, filename):
+    return 'icon_bases/' + filename
+
+
+class GameIconBase(BaseModel):
+    game = models.OneToOneField(Game, related_name="icon_base", on_delete=models.CASCADE)
+    file = models.ImageField(
+        upload_to=iconBaseName,
+        max_length=254, blank=True, null=True
+    )
+
+    def save(self, *args, **kwargs):
+        if self.game is not None:
+            self.game.image_base_updated_at = timezone.now()
+            self.game.save()
+        return super(GameIconBase, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.file.name
