@@ -119,7 +119,10 @@ class Expression(BaseModel):
         return super(Expression, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        self.game.expressions_updated_at = timezone.now()
+        if self.game is not None:
+            self.game.updated_at = timezone.now()
+            self.game.expressions_updated_at = timezone.now()
+            self.game.save()
         return super(Expression, self).delete(*args, **kwargs)
 
     def __unicode__(self):
